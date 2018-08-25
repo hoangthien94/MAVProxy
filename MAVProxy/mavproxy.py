@@ -198,6 +198,8 @@ class MPState(object):
         self.aliases = {}
         import platform
         self.system = platform.system()
+        self.multi_instance = {}
+        self.instance_count = {}
 
     def module(self, name):
         '''Find a public module (most modules are private)'''
@@ -285,7 +287,7 @@ def load_module(modname, quiet=False, **kwargs):
     '''load a module'''
     modpaths = ['MAVProxy.modules.mavproxy_%s' % modname, modname]
     for (m,pm) in mpstate.modules:
-        if m.name == modname:
+        if m.name == modname and not mpstate.multi_instance[modname]:
             if not quiet:
                 print("module %s already loaded" % modname)
             return False
